@@ -1,6 +1,8 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
+import ActivityLevel from './ActivityLevel';
+import ActivityInput from './ActivityInput';
 
-const Dog = new GraphQLObjectType({
+export default new GraphQLObjectType({
   name: 'Dog',
   fields: {
     id: {
@@ -24,8 +26,18 @@ const Dog = new GraphQLObjectType({
         const { dataSources } = context;
         return dataSources.fitBarkAPI.getDogImage(slug);
       }
+    },
+    activityLevel: {
+      type: ActivityLevel,
+      args: {
+        input: { type: ActivityInput },
+      },
+      resolve: (obj, args, context) => {
+        const { slug } = obj;
+        const { input } = args;
+        const { dataSources } = context;
+        return dataSources.fitBarkAPI.getActivityLevel({ slug, input });
+      }
     }
   },
 });
-
-export default Dog;
