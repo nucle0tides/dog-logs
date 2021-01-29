@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev:api": "nodemon --exec babel-node ./api/index.js",
-    "dev:api-debug": "nodemon --exec babel-node --inspect ./api/index.js"
+    "dev:api-debug": "nodemon --exec babel-node --inspect ./api/index.js",
+    "dev:website": "NODE_ENV=development webpack serve --mode development --progress"
   },
   "repository": {
     "type": "git",
@@ -27,12 +28,27 @@
     "@babel/core": "^7.12.10",
     "@babel/node": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
     "apollo-datasource-rest": "^0.9.7",
     "apollo-server": "^2.19.2",
     "apollo-server-express": "^2.19.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^15.5.0",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "devDependencies": {
+    "babel-loader": "^8.2.2",
+    "css-loader": "^5.0.1",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^4.5.1",
+    "node-sass": "^5.0.0",
+    "sass": "^1.32.5",
+    "sass-loader": "^10.1.1",
+    "webpack": "^5.19.0",
+    "webpack-cli": "^4.4.0",
+    "webpack-dev-server": "^3.11.2"
   }
 }
