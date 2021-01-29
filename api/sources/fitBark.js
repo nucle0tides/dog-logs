@@ -20,6 +20,20 @@ class FitBarkAPI extends RESTDataSource {
     return data;
   }
 
+  async getDogRelations() {
+    const { dog_relations } = await this.get('dog_relations');
+    return dog_relations.map(rel => rel.dog);
+  }
+
+  async getDog(slug) {
+    const { dog } = await this.get(`dog/${slug}`);
+    return dog;
+  }
+
+  async getDogImage(dog_slug) {
+    const { image: { data } } = await this.get(`picture/dog/${dog_slug}`);
+    return data;
+  }
 }
 
 export default FitBarkAPI;

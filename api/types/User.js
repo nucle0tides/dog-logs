@@ -1,4 +1,5 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLList } from 'graphql';
+import Dog from './Dog';
 
 const User = new GraphQLObjectType({
   name: 'User',
@@ -14,10 +15,17 @@ const User = new GraphQLObjectType({
     },
     picture: {
       type: GraphQLString,
-      resolve: async (obj, args, context) => {
+      resolve: (obj, args, context) => {
         const { slug } = obj;
         const { dataSources } = context;
         return dataSources.fitBarkAPI.getUserImage(slug);
+      }
+    },
+    dogs: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Dog))),
+      resolve: (obj, args, context) => {
+        const { dataSources } = context;
+        return dataSources.fitBarkAPI.getDogRelations();
       }
     },
   },
