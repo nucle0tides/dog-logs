@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/nucle0tides/dog-logs#readme",
   "dependencies": {
+    "@apollo/client": "^3.3.7",
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
     "@babel/node": "^7.12.10",
