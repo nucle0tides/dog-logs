@@ -1,8 +1,12 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
+import { GraphQLObjectType, GraphQLString, GraphQLInt } from 'graphql';
 
 export default new GraphQLObjectType({
   name: 'ActivityLevel',
   fields: {
+    id: {
+      type: GraphQLString,
+      resolve: (obj, args, context) => obj.slug,
+    },
     play: {
       type: GraphQLInt,
       resolve: (obj, args, context) => obj.min_play,

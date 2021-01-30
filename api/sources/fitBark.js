@@ -37,7 +37,7 @@ class FitBarkAPI extends RESTDataSource {
 
   async getActivityLevel({ slug, input }) {
     const { activity_level } = await this.post('time_breakdown', { dog: { slug, ...input } });
-    return activity_level;
+    return { ...activity_level, slug, ...input };
   }
 }
 

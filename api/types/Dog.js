@@ -1,4 +1,5 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
+import Date from './DateScalar';
 import ActivityLevel from './ActivityLevel';
 import ActivityInput from './ActivityInput';
 
@@ -10,7 +11,15 @@ export default new GraphQLObjectType({
       resolve: (obj, args, context) => obj.slug,
     },
     name: { type: new GraphQLNonNull(GraphQLString) },
-    birth: { type: new GraphQLNonNull(GraphQLString) },
+    birth: { type: new GraphQLNonNull(Date) },
+    activityValue: {
+      type: new GraphQLNonNull(GraphQLInt),
+      resolve: (obj, args, context) => obj.activity_value,
+    },
+    hourlyAverage: {
+      type: GraphQLInt,
+      resolve: (obj, args, context) => obj.hourly_average,
+    },
     goal: {
       type: new GraphQLNonNull(GraphQLInt),
       resolve: (obj, args, context) => obj.daily_goal,

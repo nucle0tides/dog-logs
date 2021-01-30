@@ -1,4 +1,8 @@
-import { GraphQLInputObjectType, GraphQLBoolean, GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString } from 'graphql';
+import {
+  GraphQLInputObjectType,
+  GraphQLNonNull,
+  GraphQLString,
+} from 'graphql';
 import Date from './DateScalar';
 
 export default new GraphQLInputObjectType({
