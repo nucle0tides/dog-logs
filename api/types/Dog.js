@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLList } from 'graphql';
 import Date from './DateScalar';
 import ActivityLevel from './ActivityLevel';
 import ActivityInput from './ActivityInput';
@@ -20,7 +20,7 @@ export default new GraphQLObjectType({
       type: GraphQLInt,
       resolve: (obj, args, context) => obj.hourly_average,
     },
-    goal: {
+    activityGoal: {
       type: new GraphQLNonNull(GraphQLInt),
       resolve: (obj, args, context) => obj.daily_goal,
     },
@@ -47,6 +47,13 @@ export default new GraphQLObjectType({
         const { dataSources } = context;
         return dataSources.fitBarkAPI.getActivityLevel({ slug, input });
       }
-    }
+    },
+    breeds: {
+      type: new GraphQLNonNull(GraphQLList(GraphQLString)),
+      resolve: (obj, args, context) => {
+        const { breed1 = {}, breed2 = {} } = obj;
+        return [breed1.name, breed2.name].filter(Boolean);
+      }
+    },
   },
 });

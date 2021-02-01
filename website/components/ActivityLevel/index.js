@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import {
-  Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+  Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer
 } from 'recharts';
 
 const ACTIVITY_DATA = gql`
   query getActivityLevel($input: ActivityInput!) {
     activityLevel(input: $input) {
       play
-      rest
       active
+      rest
     }
   }
 `;
@@ -33,27 +33,27 @@ const ActivityLevel = () => {
 
   const { activityLevel } = queryData;
   const { play, rest, active } = activityLevel;
-  const data = Object.entries({ play, rest, active }).map(
+  const data = Object.entries({ play, active, rest }).map(
     ([key, val]) => ({
       activity: key,
       value: val,
   }));
 
-  const randomColor = () => Math.floor(Math.random()*16777215).toString(16);
-
   return (
-    <RadarChart width={500} height={500} data={data}>
-      <PolarGrid />
-      <PolarAngleAxis dataKey="activity" />
-      <PolarRadiusAxis />
-      <Radar
-        name="Pius"
-        dataKey="value"
-        fill="#E3B215"
-        stroke="#E3B215"
-        fillOpacity={0.6}
-      />
-    </RadarChart>
+    <ResponsiveContainer height={500} width="100%">
+      <RadarChart data={data}>
+        <PolarGrid />
+        <PolarAngleAxis dataKey="activity" />
+        <PolarRadiusAxis />
+        <Radar
+          name="Pius"
+          dataKey="value"
+          fill="#E3B215"
+          stroke="#E3B215"
+          fillOpacity={0.6}
+        />
+      </RadarChart>
+    </ResponsiveContainer>
   );
 };
 

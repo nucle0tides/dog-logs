@@ -1,22 +1,16 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
-import Image from 'react-bootstrap/Image';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Skeleton from 'react-loading-skeleton';
-
-const { PIUS_UUID } = process.env;
+import styles from './styles.scss';
 
 const DOG_DATA = gql`
   query getPius {
     pius: dog {
       name
       picture
-      birth
-      goal
       activityValue
-      hourlyAverage
+      activityGoal
+      breeds
     }
   }
 `;
@@ -27,33 +21,44 @@ const Dog = () => {
   if (loading) {
     return (
       <>
-        <Skeleton height={'25vh'} />
-        <h1><Skeleton count={3} /></h1>
+        <Skeleton height={'15vh'} />
       </>
     );
   }
+  /* const data = {
+   *   pius: {
+   *     name: 'Pius',
+   *     breeds: ['American Eskimo Dog (Standard)', 'American Staffordshire Terrier'],
+   *     activityValue: 10000,
+   *     activityGoal: 15000,
+   *     picture: 'http://placerabbit.com/rabbit/1500x1500.jpg',
+   *   },
+   * }; */
   const { pius } = data;
 
   return (
-    <Container>
-      <Row>
-        <Image
-          src={`data:image/png;base64, ${pius.picture}`}
-          fluid
-          rounded
-          alt={pius.name}
-        />
-      </Row>
-      <Row>
-        <h1>{pius.name}</h1>
-      </Row>
-      <Row>
-        <h2>Daily Goal: {pius.goal}</h2>
-      </Row>
-      <Row>
-        <h3>Today's Barkpoints: {pius.activityValue}</h3>
-      </Row>
-    </Container>
+    <>
+      <div className={styles.infoContainer}>
+        <div>
+          <img
+            old-src={pius.picture}
+            src={`data:image/png;base64, ${pius.picture}`}
+            rounded
+            alt={pius.name}
+            className={styles.dogPhoto}
+          />
+        </div>
+        <div className={styles.basicInfo}>
+          <div className={styles.name}>{pius.name}</div>
+          <div className={styles.breed}>{pius.breeds.join(' && ')}</div>
+        </div>
+      </div>
+      <div className={styles.progressContainer}>
+        <div className={styles.progress}>
+          {pius.activityValue}/{pius.activityGoal} BarkPoints
+        </div>
+      </div>
+    </>
   );
 };
 

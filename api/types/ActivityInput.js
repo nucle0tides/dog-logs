@@ -11,6 +11,6 @@ export default new GraphQLInputObjectType({
     slug: { type: GraphQLString },
     from: { type: new GraphQLNonNull(Date) },
     to: { type: new GraphQLNonNull(Date) },
-    resolution: { type: GraphQLString },
+    resolution: { type: GraphQLString }, // make this an enum?
   },
 });

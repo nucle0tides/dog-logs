@@ -7,6 +7,7 @@ export default new GraphQLObjectType({
       type: GraphQLString,
       resolve: (obj, args, context) => obj.slug,
     },
+    // change to a single 'ActivityRecord'
     play: {
       type: GraphQLInt,
       resolve: (obj, args, context) => obj.min_play,
