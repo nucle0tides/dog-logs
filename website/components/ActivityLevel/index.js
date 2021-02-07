@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
+import { useTheme } from '@material-ui/core/styles';
 import {
-  Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer
+  PieChart, Pie, Sector, Cell, Tooltip,
 } from 'recharts';
 
+/* import {
+ *   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer
+ * } from 'recharts';
+ *  */
 const ACTIVITY_DATA = gql`
   query getActivityLevel($input: ActivityInput!) {
     activityLevel(input: $input) {
@@ -15,6 +20,8 @@ const ACTIVITY_DATA = gql`
 `;
 
 const ActivityLevel = () => {
+  const theme = useTheme();
+
   const { loading, error, data: queryData } = useQuery(
     ACTIVITY_DATA,
     {
@@ -35,25 +42,26 @@ const ActivityLevel = () => {
   const { play, rest, active } = activityLevel;
   const data = Object.entries({ play, active, rest }).map(
     ([key, val]) => ({
-      activity: key,
+      name: key,
       value: val,
   }));
 
+  console.log(data);
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
   return (
-    <ResponsiveContainer height={500} width="100%">
-      <RadarChart data={data}>
-        <PolarGrid />
-        <PolarAngleAxis dataKey="activity" />
-        <PolarRadiusAxis />
-        <Radar
-          name="Pius"
-          dataKey="value"
-          fill="#E3B215"
-          stroke="#E3B215"
-          fillOpacity={0.6}
-        />
-      </RadarChart>
-    </ResponsiveContainer>
+    <PieChart width={800} height={400}>
+      <Pie
+        data={data}
+        cx={200}
+        cy={200}
+        outerRadius={80}
+        fill={theme.palette.primary.dark}
+        dataKey="value"
+        label
+      />
+      <Tooltip />
+    </PieChart>
   );
 };
 
