@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Avatar from '@material-ui/core/Avatar';
@@ -8,6 +8,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
+import { ResponsiveContainer, RadialBarChart, RadialBar, PolarAngleAxis, Text } from 'recharts';
 import styles from './styles.scss';
 
 const DOG_DATA = gql`
@@ -15,8 +16,11 @@ const DOG_DATA = gql`
     pius: dog {
       name
       picture
+      weight
+      gender
       activityValue
       activityGoal
+      hourlyAverage
       breeds
     }
   }
@@ -42,45 +46,66 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
     width: 250,
-    position: 'relative',
     overflow: 'initial',
   },
   dogAvatar: {
-    width: '70%',
+    width: 150,
+    height: 150,
     borderRadius: '100%',
     marginLeft: 'auto',
     marginRight: 'auto',
-    height: 0,
-    paddingBottom: '70%',
-    transform: 'translateY(-50px)',
+    transform: `translateY(${theme.spacing(-5)}px)`,
   },
-  content: {
-
-  }
+  bioContent: {
+    marginTop: theme.spacing(-5),
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    textAlign: 'center',
+  },
+  stats: {
+    width: 250,
+    marginTop: theme.spacing(2),
+    borderRadius: theme.spacing(2),
+  },
+  statsContent: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    textAlign: 'center',
+  },
+  progress: {
+    width: 250,
+    marginTop: theme.spacing(2),
+    borderRadius: theme.spacing(2),
+    textAlign: 'center',
+  },
 }));
 
+// there's lots going on here
+// break up into smaller components later
 const Dog = () => {
+  const theme = useTheme();
   const classes = useStyles();
-  /* const { loading, error, data } = useQuery(DOG_DATA); */
+  const { loading, error, data } = useQuery(DOG_DATA);
 
-  /* if (loading) {
-   *   return (
-   *     <Paper />
-   *   );
-   * } */
-  const data = {
-    pius: {
-      name: 'Pius',
-      zip: '64111',
-      breeds: ['American Eskimo Dog (Standard)', 'American Staffordshire Terrier'],
-      sex: 'male',
-      weight: '40lbs',
-      activityValue: 10000,
-      activityGoal: 15000,
-      picture: 'http://placerabbit.com/rabbit/1500x1500.jpg',
-    },
-  };
+  if (loading) {
+    // add loading indicators
+    return (
+      <Drawer
+        className={classes.drawer}
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+        anchor="left"
+      />
+    );
+  }
+
   const { pius } = data;
+
+  const activityData = [ { points: pius.activityValue, goal: pius.activityGoal } ];
 
   return (
     <Drawer
@@ -94,12 +119,65 @@ const Dog = () => {
       <Card className={classes.bio}>
         <CardMedia
           className={classes.dogAvatar}
-          image={pius.picture}
+          component="img"
+          src={`data:image/png;base64, ${pius.picture}`}
           alt={pius.name}
         />
-        <CardContent className={classes.content}>
-          <Typography>{pius.name}</Typography>
-          <Typography>{pius.sex}, {pius.zip}</Typography>
+        <CardContent className={classes.bioContent}>
+          <Typography variant="h4" component="h1">{pius.name}</Typography>
+          <Typography component="h2">{pius.breeds.join(' && ')}</Typography>
+        </CardContent>
+      </Card>
+      <Card className={classes.stats}>
+        <CardContent className={classes.statsContent}>
+          <div>
+            <Typography variant="h6" component="h3">gender</Typography>
+            <Typography component="h4">{pius.gender}</Typography>
+          </div>
+          <div>
+            <Typography variant="h6" component="h3">weight</Typography>
+            <Typography component="h4">{pius.weight}</Typography>
+          </div>
+        </CardContent>
+      </Card>
+      <Card className={classes.progress}>
+        <CardContent>
+          <Typography variant="h6" component="h1">Activity Progress</Typography>
+          <ResponsiveContainer minHeight={150} width="100%">
+            <RadialBarChart
+              data={activityData}
+              startAngle={90}
+              endAngle={-270}
+              innerRadius="100%"
+              outerRadius="75%"
+            >
+              <PolarAngleAxis
+                type="number"
+                domain={[0, pius.activityGoal]}
+                tick={false}
+              />
+              <RadialBar
+                background
+                clockWise
+                dataKey="points"
+                fill={theme.palette.secondary.main}
+              />
+              <text
+                x="50%"
+                y="50%"
+                textAnchor="middle"
+                dominantBaseline="middle"
+              >
+                {pius.activityValue} Points
+              </text>
+            </RadialBarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+      <Card className={classes.progress}>
+        <CardContent>
+          <Typography variant="h6">Hourly Average</Typography>
+          <Typography>{pius.hourlyAverage} points/hour</Typography>
         </CardContent>
       </Card>
     </Drawer>

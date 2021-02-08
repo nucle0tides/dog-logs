@@ -28,12 +28,23 @@ export default new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString),
       resolve: (obj, args, context) => `${obj.weight} ${obj.weight_unit}`,
     },
+    gender: {
+      type: new GraphQLNonNull(GraphQLString),
+      resolve: (obj, args, context) => obj.gender,
+    },
     picture: {
       type: GraphQLString,
       resolve: (obj, args, context) => {
         const { slug } = obj;
         const { dataSources } = context;
         return dataSources.fitBarkAPI.getDogImage(slug);
+      }
+    },
+    breeds: {
+      type: new GraphQLNonNull(GraphQLList(GraphQLString)),
+      resolve: (obj, args, context) => {
+        const { breed1 = {}, breed2 = {} } = obj;
+        return [breed1.name, breed2.name].filter(Boolean);
       }
     },
     activityLevel: {
@@ -46,13 +57,6 @@ export default new GraphQLObjectType({
         const { input } = args;
         const { dataSources } = context;
         return dataSources.fitBarkAPI.getActivityLevel({ slug, input });
-      }
-    },
-    breeds: {
-      type: new GraphQLNonNull(GraphQLList(GraphQLString)),
-      resolve: (obj, args, context) => {
-        const { breed1 = {}, breed2 = {} } = obj;
-        return [breed1.name, breed2.name].filter(Boolean);
       }
     },
   },
